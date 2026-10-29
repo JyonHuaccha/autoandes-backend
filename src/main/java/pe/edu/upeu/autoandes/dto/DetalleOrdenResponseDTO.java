@@ -1,3 +1,29 @@
 package pe.edu.upeu.autoandes.dto;
-import jakarta.validation.Valid; import jakarta.validation.constraints.*; import java.math.BigDecimal; import java.time.LocalDateTime; import java.util.List;
-public record DetalleOrdenResponseDTO(Long id,Long servicioId,String servicioCodigo,String servicioNombre,Integer cantidad,BigDecimal precioUnitario,BigDecimal subtotal) {}
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.math.BigDecimal;
+
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+public class DetalleOrdenResponseDTO {
+
+    private Long id;
+
+    private Long servicioId;
+
+    private String servicioCodigo;
+
+    private String servicioNombre;
+
+    private Integer cantidad;
+
+    private BigDecimal precioUnitario;
+
+    private BigDecimal subtotal;
+}

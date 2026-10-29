@@ -1,0 +1,37 @@
+server:
+  port: ${SERVER_PORT:8080}
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:oracle:thin:@//localhost:1522/FREEPDB1}
+    username: ${DB_USERNAME:AUTOANDESDB}
+    password: ${DB_PASSWORD:123456}
+  jpa:
+    database-platform: org.hibernate.dialect.OracleDialect
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    enabled: true
+logging:
+  level:
+    root: INFO
+    pe.edu.upeu.autoandes: DEBUG
+    pe.edu.upeu.autoandes.service.impl: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.orm.jdbc.bind: 'OFF'
+    org.springframework.web: DEBUG
+  pattern:
+    console: '%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n'
+app:
+  cors:
+    allowed-origins: http://localhost:4200
+  jwt:
+    # Clave exclusiva de desarrollo; producción exige JWT_SECRET.
+    secret: ${JWT_SECRET:YXV0b2FuZGVzLWV4YW1lbi1odWFjY2hhLTIwMjYtY2xhdmUtZGVzYXJyb2xsby1sb2NhbA==}
+    expiracion-minutos: 60

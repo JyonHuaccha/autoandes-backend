@@ -1,9 +1,0 @@
-package pe.edu.upeu.autoandes.config;
-import org.springframework.web.filter.OncePerRequestFilter; import org.springframework.security.core.userdetails.UserDetailsService; import org.springframework.security.core.context.SecurityContextHolder; import org.springframework.security.authentication.UsernamePasswordAuthenticationToken; import org.springframework.security.web.authentication.WebAuthenticationDetailsSource; import org.springframework.security.core.AuthenticationException; import io.jsonwebtoken.JwtException; import jakarta.servlet.*; import jakarta.servlet.http.*; import java.io.IOException; import pe.edu.upeu.autoandes.security.RespuestaErrorSeguridad;
-public class JwtAuthenticationFilter extends OncePerRequestFilter {private final JwtService jwt;private final UserDetailsService users;public JwtAuthenticationFilter(JwtService jwt,UserDetailsService users){this.jwt=jwt;this.users=users;}
-protected void doFilterInternal(HttpServletRequest req,HttpServletResponse res,FilterChain chain)throws ServletException,IOException {
-var cabecera=req.getHeader("Authorization");
-if(cabecera!=null&&cabecera.startsWith("Bearer ")&&!req.getRequestURI().equals("/api/v1/auth/login")){
-try{String username=jwt.username(cabecera.substring(7).trim());var user=users.loadUserByUsername(username);if(!user.isEnabled())throw new IllegalArgumentException();var auth=new UsernamePasswordAuthenticationToken(user,null,user.getAuthorities());auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(req));SecurityContextHolder.getContext().setAuthentication(auth);}
-catch(JwtException|IllegalArgumentException|AuthenticationException ex){SecurityContextHolder.clearContext();RespuestaErrorSeguridad.escribir(req,res,401,"Unauthorized","Se requiere un token válido y vigente");return;}}
-chain.doFilter(req,res);}}

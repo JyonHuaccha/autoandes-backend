@@ -1,4 +1,35 @@
 package pe.edu.upeu.autoandes.security;
-import org.springframework.stereotype.Service; import org.springframework.transaction.annotation.Transactional; import org.springframework.security.core.userdetails.*; import lombok.RequiredArgsConstructor; import pe.edu.upeu.autoandes.repository.UsuarioRepository;
-@Service @RequiredArgsConstructor public class UsuarioDetailsService implements UserDetailsService {private final UsuarioRepository repository;
-@Transactional(readOnly=true) public UserDetails loadUserByUsername(String username){var u=repository.findByUsernameIgnoreCase(username.trim()).orElseThrow(()->new UsernameNotFoundException("Credenciales inválidas"));return User.withUsername(u.getUsername()).password(u.getPassword()).disabled(!Boolean.TRUE.equals(u.getActivo())).authorities(PermisosPorRol.permisos(u.getRoles().stream().map(r->r.getNombre()).toList()).toArray(String[]::new)).build();}}
+
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import pe.edu.upeu.autoandes.entity.Usuario;
+import pe.edu.upeu.autoandes.repository.UsuarioRepository;
+
+@Service
+public class UsuarioDetailsService implements UserDetailsService {
+    private final UsuarioRepository usuarioRepository;
+
+    public UsuarioDetailsService(UsuarioRepository usuarioRepository) {
+        this.usuarioRepository = usuarioRepository;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public UserDetails loadUserByUsername(String username) {
+        Usuario usuario =
+                usuarioRepository
+                        .findByUsernameIgnoreCase(username.trim())
+                        .orElseThrow(() -> new UsernameNotFoundException("Credenciales inválidas"));
+
+        return User.withUsername(usuario.getUsername())
+                .password(usuario.getPassword())
+                .authorities(PermisosPorRol.authorities(usuario.getRoles()))
+                .disabled(!Boolean.TRUE.equals(usuario.getActivo()))
+                .build();
+    }
+}

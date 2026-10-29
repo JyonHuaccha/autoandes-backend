@@ -1,5 +1,31 @@
 package pe.edu.upeu.autoandes.repository;
-import org.springframework.data.jpa.repository.*; import org.springframework.data.repository.query.Param; import java.util.*; import pe.edu.upeu.autoandes.entity.*;
-public interface DetalleOrdenRepository extends JpaRepository<DetalleOrden,Long> { boolean existsByServicioId(Long servicioId);
-@Query("select s.codigo as codigo,s.nombre as servicio,sum(d.cantidad) as cantidadTotal,sum(d.subtotal) as importeTotal from DetalleOrden d join d.orden o join d.servicio s where o.estado='REGISTRADA' and (:desde is null or o.fecha>=:desde) and (:hasta is null or o.fecha<:hasta) group by s.codigo,s.nombre order by sum(d.subtotal) desc,s.codigo asc")
-List<pe.edu.upeu.autoandes.dto.IngresoPorServicioDTO> ingresos(@Param("desde") java.time.LocalDateTime desde,@Param("hasta") java.time.LocalDateTime hasta); }
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import pe.edu.upeu.autoandes.dto.reporte.IngresoPorServicioDTO;
+import pe.edu.upeu.autoandes.entity.DetalleOrden;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+public interface DetalleOrdenRepository extends JpaRepository<DetalleOrden, Long> {
+    boolean existsByServicioId(Long servicioId);
+
+    @Query(
+            """
+            SELECT new pe.edu.upeu.autoandes.dto.reporte.IngresoPorServicioDTO(
+                s.codigo, s.nombre, SUM(d.cantidad), SUM(d.subtotal))
+            FROM DetalleOrden d
+            JOIN d.orden o
+            JOIN d.servicio s
+            WHERE o.estado = pe.edu.upeu.autoandes.enums.EstadoOrden.REGISTRADA
+              AND (:desde IS NULL OR o.fecha >= :desde)
+              AND (:hasta IS NULL OR o.fecha < :hasta)
+            GROUP BY s.codigo, s.nombre
+            ORDER BY SUM(d.subtotal) DESC, s.codigo ASC
+            """)
+    List<IngresoPorServicioDTO> ingresos(
+            @Param("desde") LocalDateTime desde, @Param("hasta") LocalDateTime hasta);
+}
