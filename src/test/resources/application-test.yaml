@@ -1,0 +1,8 @@
+spring:
+  jpa:
+    show-sql: false
+logging:
+  level:
+    root: WARN
+    pe.edu.upeu.autoandes: WARN
+    org.hibernate.SQL: WARN
