@@ -1,0 +1,2 @@
+package pe.edu.upeu.autoandes.service;
+import java.util.List; import java.time.LocalDate; import pe.edu.upeu.autoandes.dto.*; public interface OrdenService { OrdenResponseDTO registrar(OrdenRequestDTO dto,String usuario); List<OrdenResponseDTO> consultar(String placa,String estado,LocalDate desde,LocalDate hasta); OrdenResponseDTO obtener(Long id); OrdenResponseDTO anular(Long id,String motivo); }

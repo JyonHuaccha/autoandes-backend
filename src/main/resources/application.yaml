@@ -1,0 +1,29 @@
+server:
+  port: ${SERVER_PORT:8080}
+spring:
+  application:
+    name: autoandes-backend
+  datasource:
+    url: ${DB_URL:jdbc:oracle:thin:@//localhost:1522/FREEPDB1}
+    username: ${DB_USERNAME:AUTOANDESDB}
+    password: ${DB_PASSWORD:123456}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+  jackson:
+    time-zone: America/Bogota
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+app:
+  jwt:
+    secret: ${JWT_SECRET:YXV0b2FuZGVzLWV4YW1lbi1odWFjY2hhLTIwMjYtY2xhdmUtZGVzYXJyb2xsby1sb2NhbA==}
+    expiracion-minutos: 60
+logging:
+  level:
+    pe.edu.upeu.autoandes: INFO
+    org.hibernate.orm.jdbc.bind: 'OFF'
